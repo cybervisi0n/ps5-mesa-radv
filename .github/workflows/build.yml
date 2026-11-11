@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ ps5 ]
+    branches: [ main ]
     paths-ignore:
       - '**.md'
   pull_request:
