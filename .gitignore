@@ -9,3 +9,6 @@
 *.mda.tar
 clc_bin/
 ps5-payload-sdk/
+subprojects/expat-2.5.0/
+subprojects/packagecache/
+subprojects/zlib-1.3.1/
