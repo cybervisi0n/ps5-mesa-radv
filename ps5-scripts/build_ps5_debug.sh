@@ -19,4 +19,6 @@ ninja -C "build_debug" \
     src/mesa/glapi/shared-glapi/libglapi.a \
     src/mesa/glapi/glapi/libglapi_bridge.a \
     src/gallium/auxiliary/libgallium.a \
-    src/gallium/drivers/zink/libzink.a
+    src/gallium/drivers/zink/libzink.a \
+    src/egl/libEGL.a \
+    subprojects/zlib-1.3.1/libz.a

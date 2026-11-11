@@ -1,0 +1,62 @@
+name: build
+
+on:
+  push:
+    branches: [ ps5 ]
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  build_debug:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Create build container image
+        run: ./drun.sh echo done
+
+      - name: Build (debug)
+        run: ./drun.sh ./ps5-scripts/ci_build_debug.sh
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ps5-mesa_debug
+          path: build_debug/ps5-mesa_debug
+  
+  build_release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install Software
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends fuse git python3 wget zip
+
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+
+      - name: Create build container image
+        run: ./drun.sh echo done
+
+      - name: Build (release)
+        run: ./drun.sh ./ps5-scripts/ci_build_release.sh
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ps5-mesa_release
+          path: build_release/ps5-mesa_release

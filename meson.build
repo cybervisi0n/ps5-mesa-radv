@@ -495,6 +495,7 @@ with_platform_android = _platforms.contains('android')
 with_platform_x11 = _platforms.contains('x11')
 with_platform_wayland = _platforms.contains('wayland')
 with_platform_haiku = _platforms.contains('haiku')
+with_platform_ps5 = _platforms.contains('ps5')
 with_platform_windows = _platforms.contains('windows')
 with_platform_macos = _platforms.contains('macos')
 
@@ -581,7 +582,7 @@ with_xlib_lease = get_option('xlib-lease') \
   .allowed()
 
 with_egl = get_option('egl') \
-  .require(with_platform_windows or with_platform_haiku or with_dri or with_platform_android, error_message : 'EGL requires DRI, Haiku, Windows or Android') \
+  .require(with_platform_windows or with_platform_haiku or with_platform_ps5 or with_dri or with_platform_android, error_message : 'EGL requires DRI, Haiku, Windows or Android') \
   .require(with_glx != 'xlib', error_message :'EGL requires DRI, but GLX is being built with xlib support') \
   .disable_auto_if(with_platform_haiku) \
   .allowed()

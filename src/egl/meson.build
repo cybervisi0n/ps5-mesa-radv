@@ -158,6 +158,14 @@ elif with_platform_windows
   incs_for_egl += [inc_wgl, inc_gallium, inc_gallium_aux, inc_mesa]
   link_for_egl += libgallium_wgl
 
+elif with_platform_ps5
+  files_egl += files('drivers/ps5/egl_ps5.cpp')
+
+  incs_for_egl += [inc_gallium, inc_gallium_aux, inc_gallium_drivers, inc_gallium_winsys, inc_gallium_winsys_sw]
+  incs_for_egl += [inc_mesa]
+  #incs_for_egl += [include_directories('../gallium/frontends/hgl')]
+
+  link_for_egl += [libmesa, libgallium, libglapi]
 else
   error('No EGL driver available.')
 endif
@@ -202,6 +210,23 @@ egl_def = custom_target(
 
 if egl_native_platform != ''
   c_args_for_egl += '-D_EGL_NATIVE_PLATFORM=_EGL_PLATFORM_@0@'.format(egl_native_platform.to_upper())
+endif
+
+if(with_platform_ps5)
+libegl_static = static_library(
+  egl_lib_name,
+  files_egl,
+  c_args : [
+    c_args_for_egl,
+  ],
+  cpp_args : [cpp_args_for_egl],
+  gnu_symbol_visibility : 'hidden',
+  include_directories : incs_for_egl,
+  install: true,
+  link_depends : [link_deps_for_egl],
+  dependencies : [deps_for_egl, dep_dl, dep_libdrm, dep_clock, dep_thread, idep_mesautil],
+  name_prefix : host_machine.system() == 'windows' ? 'lib' : [],  # always use lib, but avoid warnings on !windows
+)
 endif
 
 libegl = shared_library(

@@ -2,17 +2,17 @@
 meson setup build_debug \
     --cross-file=$PS5_PAYLOAD_SDK/toolchain/prospero.ini \
     -Dbuildtype=debug \
-    -Dplatforms= \
+    -Dplatforms=ps5 \
     -Dc_args=-Wno-thread-safety-analysis \
     -Dcpp_args=-Wno-thread-safety-analysis \
     -Dgallium-drivers=zink \
     -Dvulkan-drivers=amd \
     -Dradv-winsys=ps5 \
     -Dopengl=true \
-    -Degl=disabled \
+    -Degl=enabled \
     -Dgbm=disabled \
-    -Dgles1=enabled \
-    -Dgles2=enabled \
+    -Dgles1=disabled \
+    -Dgles2=disabled \
     -Dglx=disabled \
     -Dllvm=disabled \
     -Damd-use-llvm=false \

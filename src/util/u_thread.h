@@ -45,7 +45,7 @@
  * still want to use normal TLS (which involves a function call, but not the
  * expensive pthread_getspecific() or its equivalent).
  */
-#if DETECT_OS_APPLE
+#if DETECT_OS_APPLE || defined(__PROSPERO__)
 /* Apple Clang emits wrappers when using thread_local that break module linkage,
  * but not with __thread
  */
