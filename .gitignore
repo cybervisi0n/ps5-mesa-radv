@@ -7,3 +7,5 @@
 /build
 .venv/
 *.mda.tar
+clc_bin/
+ps5-payload-sdk/

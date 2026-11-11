@@ -59,8 +59,8 @@
 
 #if defined(__PROSPERO__)
 #include <immintrin.h>
-#include <ps5platform/kernel.h>
-#include <ps5platform/videoout.h>
+#include "prospero/sceKernel.h"
+#include "prospero/sceVideoOut.h"
 #else
 #include <sys/mman.h>
 #endif

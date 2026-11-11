@@ -22,8 +22,8 @@
 #include "util/u_math.h"
 
 #if defined(__PROSPERO__)
-#include <ps5platform/agc.h>
-#include <ps5platform/kernel.h>
+#include "prospero/sceAgc.h"
+#include "prospero/sceKernel.h"
 #else
 #include <sys/mman.h>
 #endif

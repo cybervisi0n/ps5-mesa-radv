@@ -1,0 +1,31 @@
+#!/bin/bash
+meson setup build_debug \
+    --cross-file=$PS5_PAYLOAD_SDK/toolchain/prospero.ini \
+    -Dbuildtype=debug \
+    -Dplatforms= \
+    -Dc_args=-Wno-thread-safety-analysis \
+    -Dcpp_args=-Wno-thread-safety-analysis \
+    -Dgallium-drivers= \
+    -Dvulkan-drivers=amd \
+    -Dradv-winsys=ps5 \
+    -Dopengl=false \
+    -Degl=disabled \
+    -Dgbm=disabled \
+    -Dgles1=disabled \
+    -Dgles2=disabled \
+    -Dglx=disabled \
+    -Dllvm=disabled \
+    -Damd-use-llvm=false \
+    -Dzlib=enabled --force-fallback-for=zlib \
+    -Dzstd=disabled \
+    -Dshader-cache=enabled \
+    -Dxmlconfig=disabled \
+    -Dexpat=disabled \
+    -Dlibunwind=disabled \
+    -Dvalgrind=disabled \
+    -Dvideo-codecs= \
+    -Dbuild-tests=false \
+    -Dtools= \
+    -Dgallium-va=disabled \
+    -Dgallium-rusticl=false \
+    -Dmesa-clc=system
