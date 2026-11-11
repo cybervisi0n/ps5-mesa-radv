@@ -10,13 +10,13 @@ ninja -C "build_debug" \
     src/compiler/libcompiler.a \
     src/compiler/nir/libnir.a \
     src/compiler/spirv/libvtn.a \
-    src/amd/vulkan/libvulkan_radeon.a
-    #src/mesa/libmesa.a \
-    #src/mesa/libmesa_sse41.a \
-    #src/compiler/glsl/libglsl_util.a \
-    #src/compiler/glsl/glcpp/libglcpp.a \
-    #src/compiler/glsl/libglsl.a \
-    #src/mesa/glapi/shared-glapi/libglapi.a \
-    #src/mesa/glapi/glapi/libglapi_bridge.a \
-    #src/gallium/auxiliary/libgallium.a \
-    #src/gallium/drivers/softpipe/libsoftpipe.a
+    src/amd/vulkan/libvulkan_radeon.a \
+    src/mesa/libmesa.a \
+    src/mesa/libmesa_sse41.a \
+    src/compiler/glsl/libglsl_util.a \
+    src/compiler/glsl/glcpp/libglcpp.a \
+    src/compiler/glsl/libglsl.a \
+    src/mesa/glapi/shared-glapi/libglapi.a \
+    src/mesa/glapi/glapi/libglapi_bridge.a \
+    src/gallium/auxiliary/libgallium.a \
+    src/gallium/drivers/zink/libzink.a
