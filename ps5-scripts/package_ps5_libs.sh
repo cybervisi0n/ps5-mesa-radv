@@ -37,6 +37,7 @@ cp $BuildDir/src/mesa/libmesa_sse41.a $BuildDir/$PackageName/lib
 cp $BuildDir/src/gallium/drivers/zink/libzink.a $BuildDir/$PackageName/lib
 cp $BuildDir/src/egl/libEGL.a $BuildDir/$PackageName/lib
 cp $BuildDir/subprojects/zlib-1.3.1/libz.a $BuildDir/$PackageName/lib
+cp $BuildDir/src/amd/vulkan/libvulkan_radeon.a $BuildDir/$PackageName/lib
 
 # Copy includes
 cp -r include/EGL $BuildDir/$PackageName/include/EGL

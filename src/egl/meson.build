@@ -159,7 +159,7 @@ elif with_platform_windows
   link_for_egl += libgallium_wgl
 
 elif with_platform_ps5
-  files_egl += files('drivers/ps5/egl_ps5.cpp')
+  files_egl += files('drivers/ps5/egl_ps5.c')
 
   incs_for_egl += [inc_gallium, inc_gallium_aux, inc_gallium_drivers, inc_gallium_winsys, inc_gallium_winsys_sw]
   incs_for_egl += [inc_mesa]
