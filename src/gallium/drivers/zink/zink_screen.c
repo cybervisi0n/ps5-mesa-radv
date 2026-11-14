@@ -94,6 +94,10 @@ bool zink_tracing = false;
 #include <xf86drm.h>
 #endif
 
+#ifdef __PROSPERO__
+#include "vulkan/vk_icd.h"
+#endif
+
 static const struct debug_named_value
 zink_debug_options[] = {
    { "nir", ZINK_DEBUG_NIR, "Dump NIR during program compile" },
@@ -3395,6 +3399,15 @@ zink_cl_cts_version(struct pipe_screen *pscreen)
    return "v2024-08-08-00";
 }
 
+#ifdef __PROSPERO__
+VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL
+vk_common_GetDeviceProcAddr(VkDevice _device,
+                            const char *pName);
+
+
+#endif
+
+
 static struct zink_screen *
 zink_internal_create_screen(const struct pipe_screen_config *config, int64_t dev_major, int64_t dev_minor, uint64_t adapter_luid)
 {
@@ -3435,8 +3448,14 @@ zink_internal_create_screen(const struct pipe_screen_config *config, int64_t dev
       goto fail;
    }
 
+   #ifdef __PROSPERO__
+   // Static linking on ps5
+   screen->vk_GetInstanceProcAddr = vk_icdGetInstanceProcAddr;
+   screen->vk_GetDeviceProcAddr = vk_common_GetDeviceProcAddr;
+   #else
    screen->vk_GetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)util_dl_get_proc_address(screen->loader_lib, "vkGetInstanceProcAddr");
    screen->vk_GetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)util_dl_get_proc_address(screen->loader_lib, "vkGetDeviceProcAddr");
+   #endif
    if (!screen->vk_GetInstanceProcAddr ||
        !screen->vk_GetDeviceProcAddr) {
       if (!screen->driver_name_is_inferred)

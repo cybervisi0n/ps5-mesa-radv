@@ -21,6 +21,14 @@ struct ps5_video_out_buffer {
    void *reserved[2];
 };
 
+typedef struct SceVideoOutOutputStatus {
+	uint32_t resolution;
+	uint32_t dynamicRange;
+	uint64_t refreshRate;
+	uint64_t flags;
+	uint64_t _reserved[3];
+} SceVideoOutOutputStatus;
+
 #define PS5_VIDEO_OUT_FLIP_STATUS_WORDS 16
 #define PS5_VIDEO_OUT_FLIP_STATUS_SHOWN_ARGUMENT 3
 
@@ -54,6 +62,7 @@ int sceVideoOutIsOutputSupported(int32_t handle, uint32_t mode, const void *rese
                                  const void *reserved2, const void *reserved3);
 int sceVideoOutConfigureOutput(int32_t handle, uint32_t mode, const void *reserved1,
                                const void *reserved2, const void *reserved3);
+int32_t sceVideoOutGetOutputStatus(int32_t handle, SceVideoOutOutputStatus *status);
 
 #ifdef __cplusplus
 }

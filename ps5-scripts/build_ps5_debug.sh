@@ -21,4 +21,6 @@ ninja -C "build_debug" \
     src/gallium/auxiliary/libgallium.a \
     src/gallium/drivers/zink/libzink.a \
     src/egl/libEGL.a \
+    src/vulkan/runtime/libvulkan_runtime.a \
+    src/vulkan/util/libvulkan_util.a \
     subprojects/zlib-1.3.1/libz.a

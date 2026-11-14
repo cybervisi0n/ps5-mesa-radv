@@ -84,6 +84,8 @@ static inline bool CpuSupportsAvx2() {
     // Use compiler builtins to check for support
 #if _MSC_VER
     return IsProcessorFeaturePresent(PF_AVX2_INSTRUCTIONS_AVAILABLE);
+#elif defined(__PROSPERO__)
+    return true;
 #elif defined(__GNUC__)
     return __builtin_cpu_supports("avx2");
 #else
