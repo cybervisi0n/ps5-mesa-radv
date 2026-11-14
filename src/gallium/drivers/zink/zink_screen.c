@@ -3404,7 +3404,21 @@ VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL
 vk_common_GetDeviceProcAddr(VkDevice _device,
                             const char *pName);
 
+static VKAPI_ATTR VkResult VKAPI_CALL
+ps5_EnumerateInstanceLayerProperties(uint32_t *pCount, VkLayerProperties *pProps)
+{
+   *pCount = 0;
+   return VK_SUCCESS;
+}
 
+static VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL
+ps5_GetInstanceProcAddr(VkInstance instance, const char *pName)
+{
+   if (instance == VK_NULL_HANDLE && pName &&
+       !strcmp(pName, "vkEnumerateInstanceLayerProperties"))
+      return (PFN_vkVoidFunction)ps5_EnumerateInstanceLayerProperties;
+   return vk_icdGetInstanceProcAddr(instance, pName);
+}
 #endif
 
 
@@ -3441,6 +3455,11 @@ zink_internal_create_screen(const struct pipe_screen_config *config, int64_t dev
 
    u_trace_state_init();
 
+#ifdef __PROSPERO__
+   screen->loader_lib = NULL;
+   screen->vk_GetInstanceProcAddr = ps5_GetInstanceProcAddr;
+   screen->vk_GetDeviceProcAddr = vk_common_GetDeviceProcAddr;
+#else
    screen->loader_lib = util_dl_open(VK_LIBNAME);
    if (!screen->loader_lib) {
       if (!screen->driver_name_is_inferred)
@@ -3448,20 +3467,15 @@ zink_internal_create_screen(const struct pipe_screen_config *config, int64_t dev
       goto fail;
    }
 
-   #ifdef __PROSPERO__
-   // Static linking on ps5
-   screen->vk_GetInstanceProcAddr = vk_icdGetInstanceProcAddr;
-   screen->vk_GetDeviceProcAddr = vk_common_GetDeviceProcAddr;
-   #else
    screen->vk_GetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)util_dl_get_proc_address(screen->loader_lib, "vkGetInstanceProcAddr");
    screen->vk_GetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)util_dl_get_proc_address(screen->loader_lib, "vkGetDeviceProcAddr");
-   #endif
    if (!screen->vk_GetInstanceProcAddr ||
        !screen->vk_GetDeviceProcAddr) {
       if (!screen->driver_name_is_inferred)
          mesa_loge("ZINK: failed to get proc address");
       goto fail;
    }
+#endif
 
    if (config) {
       driParseConfigFiles(config->options, config->options_info,

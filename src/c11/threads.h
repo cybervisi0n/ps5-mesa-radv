@@ -150,6 +150,38 @@ enum
 
 /*-------------------------- functions --------------------------*/
 
+#if defined(__PROSPERO__)
+/* prospero: libSceLibcInternal also implements C11 <threads.h> for
+ * applications. It uses the same names but FreeBSD's result values.
+ * For example, thrd_success is 4, but Mesa compares results with 0.
+ * Give Mesa's implementation its own symbols. */
+#define call_once mesa_c11_call_once
+#define cnd_broadcast mesa_c11_cnd_broadcast
+#define cnd_destroy mesa_c11_cnd_destroy
+#define cnd_init mesa_c11_cnd_init
+#define cnd_signal mesa_c11_cnd_signal
+#define cnd_timedwait mesa_c11_cnd_timedwait
+#define cnd_wait mesa_c11_cnd_wait
+#define mtx_destroy mesa_c11_mtx_destroy
+#define mtx_init mesa_c11_mtx_init
+#define mtx_lock mesa_c11_mtx_lock
+#define mtx_timedlock mesa_c11_mtx_timedlock
+#define mtx_trylock mesa_c11_mtx_trylock
+#define mtx_unlock mesa_c11_mtx_unlock
+#define thrd_create mesa_c11_thrd_create
+#define thrd_current mesa_c11_thrd_current
+#define thrd_detach mesa_c11_thrd_detach
+#define thrd_equal mesa_c11_thrd_equal
+#define thrd_exit mesa_c11_thrd_exit
+#define thrd_join mesa_c11_thrd_join
+#define thrd_sleep mesa_c11_thrd_sleep
+#define thrd_yield mesa_c11_thrd_yield
+#define tss_create mesa_c11_tss_create
+#define tss_delete mesa_c11_tss_delete
+#define tss_get mesa_c11_tss_get
+#define tss_set mesa_c11_tss_set
+#endif
+
 void call_once(once_flag *, void (*)(void));
 int cnd_broadcast(cnd_t *);
 void cnd_destroy(cnd_t *);

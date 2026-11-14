@@ -1130,6 +1130,10 @@ disk_cache_touch_cache_user_marker(char *path)
    free(marker_path);
 }
 
+#ifdef __PROSPERO__
+int ps5_posix_fallocate(int fd, off_t offset, off_t length);
+#endif
+
 bool
 disk_cache_mmap_cache_index(void *mem_ctx, struct disk_cache *cache)
 {
@@ -1156,7 +1160,11 @@ disk_cache_mmap_cache_index(void *mem_ctx, struct disk_cache *cache)
       /* posix_fallocate() ensures disk space is allocated otherwise it
        * fails if there is not enough space on the disk.
        */
+      #ifdef __PROSPERO__
+      int ret = ps5_posix_fallocate(fd, 0, size);
+      #else
       int ret = posix_fallocate(fd, 0, size);
+      #endif
       if (ret != 0) {
          if (ret == EOPNOTSUPP) {
             if (ftruncate(fd, size) == -1)

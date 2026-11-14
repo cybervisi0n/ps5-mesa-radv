@@ -126,12 +126,12 @@ _eglGetNativePlatformFromEnv(void)
 static _EGLPlatformType
 _eglNativePlatformDetectNativeDisplay(void *nativeDisplay)
 {
-   if (nativeDisplay == EGL_DEFAULT_DISPLAY)
-      return _EGL_INVALID_PLATFORM;
-
 #ifdef __PROSPERO__
    return _EGL_PLATFORM_PROSPERO;
 #endif
+
+   if (nativeDisplay == EGL_DEFAULT_DISPLAY)
+      return _EGL_INVALID_PLATFORM;
 
 #ifdef HAVE_WINDOWS_PLATFORM
    if (GetObjectType(nativeDisplay) == OBJ_DC)

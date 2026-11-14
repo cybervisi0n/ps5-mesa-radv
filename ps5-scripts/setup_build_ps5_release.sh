@@ -8,6 +8,7 @@ meson setup build_release \
     -Dgallium-drivers=zink \
     -Dvulkan-drivers=amd \
     -Dradv-winsys=ps5 \
+    -Dradv-build-id=00000001 \
     -Dopengl=true \
     -Degl=enabled \
     -Dgbm=disabled \
