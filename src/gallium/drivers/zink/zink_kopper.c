@@ -83,9 +83,30 @@ init_dt_type(struct kopper_displaytarget *cdt)
       break;
 #endif
    default:
+      #ifdef __PROSPERO__
+      cdt->type = KOPPER_PROSPERO;
+      cdt->info.bos.sType = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR;
+      #else
       UNREACHABLE("unsupported!");
+      #endif
    }
 }
+
+#ifdef __PROSPERO__
+VKAPI_ATTR VkResult VKAPI_CALL
+wsi_CreateDisplayPlaneSurfaceKHR(VkInstance _instance,
+                                 const VkDisplaySurfaceCreateInfoKHR *pCreateInfo,
+                                 const VkAllocationCallbacks *pAllocator,
+                                 VkSurfaceKHR *pSurface);
+   
+VKAPI_ATTR VkResult VKAPI_CALL
+wsi_GetPhysicalDeviceDisplayPropertiesKHR(VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount,
+                                          VkDisplayPropertiesKHR *pProperties);
+
+VKAPI_ATTR VkResult VKAPI_CALL
+wsi_GetDisplayModePropertiesKHR(VkPhysicalDevice physicalDevice, VkDisplayKHR display, uint32_t *pPropertyCount,
+                                VkDisplayModePropertiesKHR *pProperties);
+#endif
 
 static VkSurfaceKHR
 kopper_CreateSurface(struct zink_screen *screen, struct kopper_displaytarget *cdt)
@@ -121,8 +142,46 @@ kopper_CreateSurface(struct zink_screen *screen, struct kopper_displaytarget *cd
       break;
    }
 #endif
+#ifdef __PROSPERO__
+   default: {
+      VkDisplaySurfaceCreateInfoKHR *khrDisplay = (VkDisplaySurfaceCreateInfoKHR *)&cdt->info.bos;
+
+      // we need a display mode here for later or else the videoout wsi crashes
+      uint32_t display_count = 0;
+      VkResult result;
+
+      wsi_GetPhysicalDeviceDisplayPropertiesKHR(screen->pdev, &display_count, NULL);
+
+      VkDisplayPropertiesKHR *displays =
+         calloc(display_count, sizeof(*displays));
+
+      wsi_GetPhysicalDeviceDisplayPropertiesKHR(
+         screen->pdev, &display_count, displays);
+      
+      VkDisplayKHR display = displays[0].display;
+      free(displays);
+
+      uint32_t mode_count = 0;
+
+      result = wsi_GetDisplayModePropertiesKHR(
+         screen->pdev, display, &mode_count, NULL);
+
+      VkDisplayModePropertiesKHR *modes =
+         calloc(mode_count, sizeof(*modes));
+
+      wsi_GetDisplayModePropertiesKHR(
+         screen->pdev, display, &mode_count, modes);
+
+      khrDisplay->displayMode = modes[0].displayMode;
+      free(modes);
+
+      error = wsi_CreateDisplayPlaneSurfaceKHR(screen->instance, khrDisplay, NULL, &surface);
+      break;
+   }
+#else
    default:
       UNREACHABLE("unsupported!");
+#endif
    }
    if (error != VK_SUCCESS) {
       return VK_NULL_HANDLE;
@@ -315,6 +374,7 @@ kopper_CreateSwapchain(struct zink_screen *screen, struct kopper_displaytarget *
    switch (cdt->type) {
    case KOPPER_X11:
    case KOPPER_WIN32:
+   case KOPPER_PROSPERO:
       /* With Xcb, minImageExtent, maxImageExtent, and currentExtent must always equal the window size.
        * ...
        * Due to above restrictions, it is only possible to create a new swapchain on this
@@ -446,6 +506,7 @@ zink_kopper_displaytarget_create(struct zink_screen *screen, unsigned tex_usage,
             break;
          case KOPPER_WAYLAND:
          case KOPPER_WIN32:
+         case KOPPER_PROSPERO:
             _mesa_hash_table_init(&screen->dts, screen, _mesa_hash_pointer, _mesa_key_pointer_equal);
             break;
          default:
@@ -515,6 +576,13 @@ zink_kopper_displaytarget_create(struct zink_screen *screen, unsigned tex_usage,
    case KOPPER_WIN32: {
       VkWin32SurfaceCreateInfoKHR *win32 = (VkWin32SurfaceCreateInfoKHR *)&cdt->info.bos;
       _mesa_hash_table_insert(&screen->dts, win32->hwnd, cdt);
+      break;
+   }
+#endif
+#ifdef __PROSPERO__
+   case KOPPER_PROSPERO: {
+      VkDisplaySurfaceCreateInfoKHR *khrDisplay = (VkDisplaySurfaceCreateInfoKHR *)&cdt->info.bos;
+      _mesa_hash_table_insert(&screen->dts, (void*)khrDisplay->planeIndex, cdt);
       break;
    }
 #endif

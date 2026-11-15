@@ -40,6 +40,9 @@ cp $BuildDir/subprojects/zlib-1.3.1/libz.a $BuildDir/$PackageName/lib
 cp $BuildDir/src/amd/vulkan/libvulkan_radeon.a $BuildDir/$PackageName/lib
 cp $BuildDir/src/vulkan/runtime/libvulkan_runtime.a $BuildDir/$PackageName/lib
 cp $BuildDir/src/vulkan/util/libvulkan_util.a $BuildDir/$PackageName/lib
+cp $BuildDir/src/vulkan/runtime/libvulkan_runtime.a $BuildDir/$PackageName/lib
+cp $BuildDir/src/vulkan/runtime/libvulkan_lite_runtime.a $BuildDir/$PackageName/lib
+cp $BuildDir/src/vulkan/runtime/libvulkan_instance.a $BuildDir/$PackageName/lib
 
 # Copy includes
 cp -r include/EGL $BuildDir/$PackageName/include/EGL

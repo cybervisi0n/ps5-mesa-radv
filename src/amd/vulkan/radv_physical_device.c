@@ -50,6 +50,10 @@ typedef void *drmDevicePtr;
 #include <llvm-c/TargetMachine.h>
 #endif
 
+#ifdef __PROSPERO__
+#include "vk_common_entrypoints.h"
+#endif
+
 /* The PS5 winsys reads the GPU clock through its queue (RADEON_TIMESTAMP). */
 #if defined(_WIN32) || (defined(AMD_NO_DRM) && !defined(RADV_PS5))
 #define RADV_SUPPORT_CALIBRATED_TIMESTAMPS 0
@@ -2641,6 +2645,15 @@ radv_physical_device_try_create(struct radv_instance *instance, drmDevicePtr drm
    struct vk_physical_device_dispatch_table dispatch_table;
    vk_physical_device_dispatch_table_from_entrypoints(&dispatch_table, &radv_physical_device_entrypoints, true);
    vk_physical_device_dispatch_table_from_entrypoints(&dispatch_table, &wsi_physical_device_entrypoints, false);
+
+   #ifdef __PROSPERO__
+   dispatch_table.GetPhysicalDeviceProperties2 =
+    vk_common_GetPhysicalDeviceProperties2;
+
+   dispatch_table.GetPhysicalDeviceProperties2KHR =
+       (PFN_vkGetPhysicalDeviceProperties2KHR)
+       vk_common_GetPhysicalDeviceProperties2;
+   #endif
 
    result = vk_physical_device_init(&pdev->vk, &instance->vk, NULL, NULL, NULL, &dispatch_table);
    if (result != VK_SUCCESS) {

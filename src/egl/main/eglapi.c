@@ -1040,8 +1040,10 @@ _eglCreateWindowSurfaceCommon(_EGLDisplay *disp, EGLConfig config,
    _EGLSurface *surf = NULL;
    EGLSurface ret;
 
+   #ifndef __PROSPERO__
    if (native_window == NULL)
       RETURN_EGL_ERROR(disp, EGL_BAD_NATIVE_WINDOW, EGL_NO_SURFACE);
+   #endif
 
    if (disp && (disp->Platform == _EGL_PLATFORM_SURFACELESS ||
                 disp->Platform == _EGL_PLATFORM_DEVICE)) {
