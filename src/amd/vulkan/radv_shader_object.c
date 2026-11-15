@@ -379,7 +379,14 @@ radv_shader_object_init_graphics(struct radv_shader_object *shader_obj, struct r
                                  const VkShaderCreateInfoEXT *pCreateInfo)
 {
    mesa_shader_stage stage = vk_to_mesa_shader_stage(pCreateInfo->stage);
+   
+   #ifdef __PROSPERO__
+   // PROSPERO: changed to heap allocated to avoid allocating a large struct on the stack
+   struct radv_shader_stage * stages;
+   stages = malloc(sizeof(struct radv_shader_stage) * MESA_VULKAN_SHADER_STAGES);
+   #else
    struct radv_shader_stage stages[MESA_VULKAN_SHADER_STAGES];
+   #endif
 
    for (unsigned i = 0; i < MESA_VULKAN_SHADER_STAGES; i++) {
       stages[i].stage = MESA_SHADER_NONE;
@@ -472,6 +479,10 @@ radv_shader_object_init_graphics(struct radv_shader_object *shader_obj, struct r
          }
       }
    }
+
+   #ifdef __PROSPERO__
+   free(stages);
+   #endif
 
    return VK_SUCCESS;
 }

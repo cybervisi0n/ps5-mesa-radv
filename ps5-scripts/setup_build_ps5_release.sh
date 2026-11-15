@@ -19,7 +19,7 @@ meson setup build_release \
     -Damd-use-llvm=false \
     -Dzlib=enabled --force-fallback-for=zlib \
     -Dzstd=disabled \
-    -Dshader-cache=enabled \
+    -Dshader-cache=disabled \
     -Dxmlconfig=disabled \
     -Dexpat=disabled \
     -Dlibunwind=disabled \

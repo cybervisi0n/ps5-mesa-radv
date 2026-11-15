@@ -1222,7 +1222,9 @@ zink_kopper_fixup_depth_buffer(struct zink_context *ctx)
    if (!ctx->fb_state.zsbuf.texture)
       return;
 
+   #ifndef __PROSPERO__
    assert(ctx->fb_state.zsbuf.texture->bind & PIPE_BIND_DISPLAY_TARGET);
+   #endif
 
    struct zink_resource *res = zink_resource(ctx->fb_state.zsbuf.texture);
    unsigned width = pipe_surface_width(&ctx->fb_state.zsbuf);
@@ -1257,7 +1259,9 @@ bool
 zink_kopper_check(struct pipe_resource *pres)
 {
    struct zink_resource *res = zink_resource(pres);
+   #ifndef __PROSPERO__
    assert(pres->bind & PIPE_BIND_DISPLAY_TARGET);
+   #endif
    if (!res->obj->dt)
       return false;
    struct kopper_displaytarget *cdt = res->obj->dt;
