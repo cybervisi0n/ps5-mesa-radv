@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ninja -C "build_debug" \
+ninja -C "build_release" \
     src/util/blake3/libblake3.a \
     src/c11/impl/libmesa_util_c11.a \
     src/util/libmesa_util_simd.a \

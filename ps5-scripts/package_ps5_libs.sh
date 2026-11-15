@@ -48,4 +48,4 @@ cp $BuildDir/src/vulkan/runtime/libvulkan_instance.a $BuildDir/$PackageName/lib
 cp -r include/EGL $BuildDir/$PackageName/include/EGL
 cp -r include/GL $BuildDir/$PackageName/include/GL
 cp -r include/KHR $BuildDir/$PackageName/include/KHR
-
+cp -r include/vulkan $BuildDir/$PackageName/include/vulkan
