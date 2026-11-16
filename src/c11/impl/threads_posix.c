@@ -246,6 +246,44 @@ mtx_unlock(mtx_t *mtx)
 int
 thrd_create(thrd_t *thr, thrd_start_t func, void *arg)
 {
+    #ifdef __PROSPERO__
+    struct impl_thrd_param *pack;
+    pthread_attr_t attr;
+    int ret;
+
+    assert(thr != NULL);
+
+    pack = malloc(sizeof(struct impl_thrd_param));
+    if (!pack)
+        return thrd_nomem;
+
+    pack->func = func;
+    pack->arg = arg;
+
+    ret = pthread_attr_init(&attr);
+    if (ret != 0) {
+        free(pack);
+        return thrd_error;
+    }
+
+    ret = pthread_attr_setstacksize(&attr, 8 * 1024 * 1024);
+    if (ret != 0) {
+        pthread_attr_destroy(&attr);
+        free(pack);
+        return thrd_error;
+    }
+
+    ret = pthread_create(thr, &attr, impl_thrd_routine, pack);
+
+    pthread_attr_destroy(&attr);
+
+    if (ret != 0) {
+        free(pack);
+        return thrd_error;
+    }
+
+    return thrd_success;
+    #else
     struct impl_thrd_param *pack;
     assert(thr != NULL);
     pack = (struct impl_thrd_param *)malloc(sizeof(struct impl_thrd_param));
@@ -257,6 +295,7 @@ thrd_create(thrd_t *thr, thrd_start_t func, void *arg)
         return thrd_error;
     }
     return thrd_success;
+    #endif
 }
 
 // 7.25.5.2
