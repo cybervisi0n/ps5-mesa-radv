@@ -84,6 +84,7 @@
  * enough for the host builds to run the swapchain's logic. */
 #define PS5_VIDEO_OUT_USER_SYSTEM 0xff
 #define PS5_VIDEO_OUT_PIXEL_FORMAT_B8G8R8A8_SDR UINT64_C(0x8000000000000000)
+#define SCE_VIDEO_OUT_PIXEL_FORMAT_R8_G8_B8_A8_SRGB UINT64_C(0x8000000022000000)
 #define PS5_VIDEO_OUT_TILING_64KB_R_X 0u
 #define PS5_VIDEO_OUT_ATTRIBUTE_BYTES 80
 #define PS5_VIDEO_OUT_FLIP_STATUS_WORDS 16
@@ -492,7 +493,8 @@ videoout_register_locked(const struct wsi_videoout_size *size, const struct wsi_
    for (uint32_t i = 0; i < VIDEOOUT_BUFFERS; i++)
       registered[i] = (struct ps5_video_out_buffer){.data = buffers + i * size->buffer_bytes};
    uint8_t attribute[PS5_VIDEO_OUT_ATTRIBUTE_BYTES] = {0};
-   sceVideoOutSetBufferAttribute2(attribute, PS5_VIDEO_OUT_PIXEL_FORMAT_B8G8R8A8_SDR,
+   // TODO: remove that magic number, it represents SCE_VIDEO_OUT_PIXEL_FORMAT_R8_G8_B8_A8_SRGB
+   sceVideoOutSetBufferAttribute2(attribute, UINT64_C(0x8000000022000000),
                                   PS5_VIDEO_OUT_TILING_64KB_R_X, size->extent.width, size->extent.height, 0, 0, 0);
    if (result == 0)
       result = sceVideoOutRegisterBuffers2(out->handle, (int32_t)index, (int32_t)(index * VIDEOOUT_BUFFERS),
