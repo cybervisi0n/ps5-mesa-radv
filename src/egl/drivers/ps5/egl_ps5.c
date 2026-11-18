@@ -477,8 +477,8 @@ ps5_egl_init_window(struct ps5_egl_surface *surface)
 {
    // TODO query this from sceVideoOut
 
-   surface->base.Width = 1920;
-   surface->base.Height = 1080;
+   surface->base.Width = 3840;
+   surface->base.Height = 2160;
    ps5_egl_init_kopper_info(surface);
 
    return EGL_TRUE;
